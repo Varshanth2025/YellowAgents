@@ -3,7 +3,8 @@
 ## ✅ Completed: OpenAI Files API Integration
 
 **Date:** January 17, 2026  
-**Commits:** 
+**Commits:**
+
 - `bc0fb3a` - Initial commit (preserved working version)
 - `d06f82e` - File upload feature implementation
 - `cbad4cc` - Documentation update
@@ -114,13 +115,14 @@ curl -X DELETE http://localhost:5001/api/projects/{projectId}/files/{fileId} \
 ✅ File type validation  
 ✅ Size limits enforced  
 ✅ Temporary files cleaned up after upload  
-✅ Graceful error handling  
+✅ Graceful error handling
 
 ---
 
 ## 🎓 Technical Details
 
 **Flow:**
+
 1. User uploads file via frontend
 2. Multer saves temporarily to `uploads/`
 3. Backend uploads to OpenAI Files API
@@ -130,6 +132,7 @@ curl -X DELETE http://localhost:5001/api/projects/{projectId}/files/{fileId} \
 7. Frontend displays file in list
 
 **Database Schema:**
+
 ```javascript
 {
   projectId: ObjectId,
@@ -149,6 +152,7 @@ curl -X DELETE http://localhost:5001/api/projects/{projectId}/files/{fileId} \
 ## ✨ Next Steps
 
 This feature is ready for:
+
 - ✅ Local testing
 - ✅ Integration with RAG (Retrieval Augmented Generation)
 - ✅ Production deployment

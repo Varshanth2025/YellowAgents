@@ -93,3 +93,22 @@ exports.getOpenAIFile = async (fileId) => {
     throw new Error("Failed to retrieve file from OpenAI");
   }
 };
+
+/**
+ * Retrieve file content from OpenAI Files API
+ * @param {String} fileId - OpenAI file ID
+ * @returns {Promise<String>} - File content as text
+ */
+exports.getOpenAIFileContent = async (fileId) => {
+  try {
+    const content = await openai.files.content(fileId);
+    // content is a Response object, convert to text
+    const text = await content.text();
+    return text;
+  } catch (error) {
+    console.error("OpenAI File Content Error:", error.message);
+    throw new Error(
+      `Failed to retrieve file content from OpenAI: ${error.message}`,
+    );
+  }
+};

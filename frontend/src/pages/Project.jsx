@@ -278,6 +278,23 @@ const Project = () => {
         )}
 
         <div className="card chat-container">
+          {files.length > 0 && (
+            <div
+              style={{
+                padding: "10px",
+                background: "#e8f5e9",
+                borderRadius: "5px",
+                marginBottom: "10px",
+                fontSize: "0.9em",
+              }}
+            >
+              ✅{" "}
+              <strong>
+                {files.length} file{files.length > 1 ? "s" : ""}
+              </strong>{" "}
+              uploaded - AI can now read and answer questions about your files!
+            </div>
+          )}
           <div className="messages">
             {messages.length === 0 ? (
               <p style={{ textAlign: "center", color: "#999" }}>
@@ -300,7 +317,11 @@ const Project = () => {
               value={input}
               onChange={(e) => setInput(e.target.value)}
               placeholder={
-                prompt ? "Type your message..." : "Set a system prompt first"
+                prompt
+                  ? files.length > 0
+                    ? "Ask questions about your uploaded files..."
+                    : "Type your message..."
+                  : "Set a system prompt first"
               }
               disabled={sending || !prompt}
             />

@@ -1,7 +1,9 @@
 const Project = require("../models/Project.model");
 const Prompt = require("../models/Prompt.model");
 const Message = require("../models/Message.model");
+const FileAttachment = require("../models/FileAttachment.model");
 const { getChatResponse } = require("../services/llm.service");
+const { getOpenAIFileContent } = require("../services/openai.service");
 const { AppError } = require("../middleware/errorHandler");
 
 /**
@@ -53,7 +55,32 @@ exports.sendMessage = async (req, res, next) => {
     // Reverse to get chronological order (oldest to newest)
     const messageHistory = previousMessages.reverse();
 
-    // 4. Save user's message
+    // 4. Fetch uploaded files and their content
+    const files = await FileAttachment.find({
+      projectId: projectId,
+      createdBy: req.user.id,
+      status: "uploaded",
+    }).limit(5); // Limit to 5 most recent files to avoid token limits
+
+    let fileContext = "";
+    if (files.length > 0) {
+      fileContext = "\n\n=== UPLOADED FILES CONTEXT ===\n";
+      for (const file of files) {
+        try {
+          const content = await getOpenAIFileContent(file.openaiFileId);
+          fileContext += `\n--- File: ${file.filename} ---\n${content}\n`;
+        } catch (error) {
+          console.error(`Error reading file ${file.filename}:`, error.message);
+          fileContext += `\n--- File: ${file.filename} (Content unavailable) ---\n`;
+        }
+      }
+      fileContext += "\n=== END OF FILES ===\n\n";
+    }
+
+    // Enhanced system prompt with file context
+    const enhancedSystemPrompt = prompt.systemPrompt + fileContext;
+
+    // 5. Save user's message
     const userMessage = await Message.create({
       projectId: projectId,
       role: "user",
@@ -62,9 +89,9 @@ exports.sendMessage = async (req, res, next) => {
       sessionId: sessionId || undefined,
     });
 
-    // 5. Call OpenAI with system prompt + history + new message
+    // 6. Call OpenAI with enhanced system prompt (includes file content) + history + new message
     const aiResponse = await getChatResponse(
-      prompt.systemPrompt,
+      enhancedSystemPrompt,
       [...messageHistory, { role: "user", content: message }],
       {
         model: project.agentConfig?.model || "gpt-3.5-turbo",
@@ -73,7 +100,7 @@ exports.sendMessage = async (req, res, next) => {
       },
     );
 
-    // 6. Save assistant's response
+    // 7. Save assistant's response
     const assistantMessage = await Message.create({
       projectId: projectId,
       role: "assistant",
@@ -82,10 +109,11 @@ exports.sendMessage = async (req, res, next) => {
       sessionId: sessionId || undefined,
       metadata: {
         model: project.agentConfig?.model || "gpt-3.5-turbo",
+        filesUsed: files.length,
       },
     });
 
-    // 7. Return response
+    // 8. Return response
     res.status(200).json({
       success: true,
       data: {
