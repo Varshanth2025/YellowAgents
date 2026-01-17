@@ -1,5 +1,5 @@
 const fs = require("fs").promises;
-const pdf = require("pdf-parse");
+const pdfParse = require("pdf-parse");
 
 /**
  * Extract text content from various file types
@@ -50,7 +50,7 @@ exports.extractTextFromFile = async (filePath, mimeType) => {
 async function extractPDFText(filePath) {
   try {
     const dataBuffer = await fs.readFile(filePath);
-    const data = await pdf(dataBuffer);
+    const data = await pdfParse(dataBuffer);
     return data.text;
   } catch (error) {
     console.error("PDF extraction error:", error.message);
