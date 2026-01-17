@@ -50,8 +50,12 @@ exports.extractTextFromFile = async (filePath, mimeType) => {
 async function extractPDFText(filePath) {
   try {
     const dataBuffer = await fs.readFile(filePath);
-    const data = await PDFParse(dataBuffer);
-    return data.text;
+    
+    // Use PDFParse v2 API - create instance with data
+    const parser = new PDFParse({ data: dataBuffer });
+    const result = await parser.getText();
+    
+    return result.text || '';
   } catch (error) {
     console.error("PDF extraction error:", error.message);
     throw new Error(`Failed to extract PDF text: ${error.message}`);
