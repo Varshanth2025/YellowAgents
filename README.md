@@ -14,6 +14,7 @@ A multi-tenant platform for creating and managing AI agents powered by OpenAI. B
 - 📝 **System Prompts** - Configure AI agent behavior with custom instructions
 - 💾 **Persistent Conversations** - All messages saved and retrievable
 - 🎯 **Project Management** - Create, update, and delete AI agents from dashboard
+- 📎 **File Uploads** - Upload documents to enhance AI responses using OpenAI Files API
 
 ### Technical Features
 
@@ -105,6 +106,13 @@ A multi-tenant platform for creating and managing AI agents powered by OpenAI. B
 - `PUT /api/projects/:id` - Update project
 - `DELETE /api/projects/:id` - Delete project
 
+### Files (Document Upload)
+
+- `POST /api/projects/:projectId/files` - Upload file to OpenAI
+- `GET /api/projects/:projectId/files` - List project files
+- `GET /api/projects/:projectId/files/:fileId` - Get file details
+- `DELETE /api/projects/:projectId/files/:fileId` - Delete file
+
 ###🔐 Environment Variables
 
 Create a `.env` file in the root directory:
@@ -145,7 +153,7 @@ Create a `.env` file in the root directory:
 
 - [ ] Add conversation sessions management
 - [ ] Implement message search and filtering
-- [ ] Add support for file uploads (RAG)
+- [x] Add support for file uploads (RAG) - **Completed!**
 - [ ] Implement function calling for AI agents
 - [ ] Add usage analytics and token tracking
 - [ ] Support for multiple AI providers
