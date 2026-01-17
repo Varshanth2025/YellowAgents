@@ -44,4 +44,18 @@ export const sendMessage = (projectId, data) =>
 export const getChatHistory = (projectId, sessionId) =>
   api.get(`/chat/${projectId}/history?sessionId=${sessionId || ""}`);
 
+// Files
+export const uploadFile = (projectId, formData) =>
+  api.post(`/projects/${projectId}/files`, formData, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
+export const getProjectFiles = (projectId) =>
+  api.get(`/projects/${projectId}/files`);
+export const getFile = (projectId, fileId) =>
+  api.get(`/projects/${projectId}/files/${fileId}`);
+export const deleteFile = (projectId, fileId) =>
+  api.delete(`/projects/${projectId}/files/${fileId}`);
+
 export default api;

@@ -9,8 +9,9 @@ const {
 } = require("../controllers/project.controller");
 const { protect } = require("../middleware/auth");
 
-// Import prompt routes
+// Import nested routes
 const promptRoutes = require("./prompt.routes");
+const fileRoutes = require("./file.routes");
 
 // All routes are protected
 router.use(protect);
@@ -21,5 +22,8 @@ router.route("/:id").get(getProject).put(updateProject).delete(deleteProject);
 
 // Nested prompt routes: /api/projects/:projectId/prompt
 router.use("/:projectId/prompt", promptRoutes);
+
+// Nested file routes: /api/projects/:projectId/files
+router.use("/:projectId/files", fileRoutes);
 
 module.exports = router;
