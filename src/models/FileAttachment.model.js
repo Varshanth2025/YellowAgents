@@ -65,6 +65,11 @@ const FileAttachmentSchema = new mongoose.Schema(
       type: String,
       maxlength: [500, "Description cannot exceed 500 characters"],
     },
+    // Extracted text content (stored locally for RAG)
+    extractedText: {
+      type: String,
+      maxlength: [50000, "Extracted text cannot exceed 50000 characters"],
+    },
   },
   {
     timestamps: true,

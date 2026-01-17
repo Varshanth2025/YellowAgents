@@ -3,7 +3,6 @@ const Prompt = require("../models/Prompt.model");
 const Message = require("../models/Message.model");
 const FileAttachment = require("../models/FileAttachment.model");
 const { getChatResponse } = require("../services/llm.service");
-const { getOpenAIFileContent } = require("../services/openai.service");
 const { AppError } = require("../middleware/errorHandler");
 
 /**
@@ -55,23 +54,23 @@ exports.sendMessage = async (req, res, next) => {
     // Reverse to get chronological order (oldest to newest)
     const messageHistory = previousMessages.reverse();
 
-    // 4. Fetch uploaded files and their content
+    // 4. Fetch uploaded files and their extracted text content
     const files = await FileAttachment.find({
       projectId: projectId,
       createdBy: req.user.id,
       status: "uploaded",
-    }).limit(5); // Limit to 5 most recent files to avoid token limits
+    })
+      .select("filename extractedText")
+      .limit(5); // Limit to 5 most recent files to avoid token limits
 
     let fileContext = "";
     if (files.length > 0) {
       fileContext = "\n\n=== UPLOADED FILES CONTEXT ===\n";
       for (const file of files) {
-        try {
-          const content = await getOpenAIFileContent(file.openaiFileId);
-          fileContext += `\n--- File: ${file.filename} ---\n${content}\n`;
-        } catch (error) {
-          console.error(`Error reading file ${file.filename}:`, error.message);
-          fileContext += `\n--- File: ${file.filename} (Content unavailable) ---\n`;
+        if (file.extractedText && file.extractedText.trim()) {
+          fileContext += `\n--- File: ${file.filename} ---\n${file.extractedText}\n`;
+        } else {
+          fileContext += `\n--- File: ${file.filename} (No content available) ---\n`;
         }
       }
       fileContext += "\n=== END OF FILES ===\n\n";

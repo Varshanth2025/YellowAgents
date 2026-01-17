@@ -5,6 +5,7 @@ const {
   deleteOpenAIFile,
   getOpenAIFile,
 } = require("../services/openai.service");
+const { extractTextFromFile } = require("../services/textExtractor.service");
 const { AppError } = require("../middleware/errorHandler");
 const fs = require("fs").promises;
 
@@ -38,6 +39,23 @@ exports.uploadFile = async (req, res, next) => {
     // Upload file to OpenAI
     const openaiFile = await uploadFileToOpenAI(req.file.path, purpose);
 
+    // Extract text content from file for local storage
+    let extractedText = "";
+    try {
+      extractedText = await extractTextFromFile(
+        req.file.path,
+        req.file.mimetype,
+      );
+      // Limit to 50000 characters to avoid token limits
+      if (extractedText.length > 50000) {
+        extractedText =
+          extractedText.substring(0, 50000) + "\n\n[Content truncated...]";
+      }
+    } catch (error) {
+      console.error("Error extracting text:", error.message);
+      extractedText = `[Unable to extract text from ${req.file.originalname}]`;
+    }
+
     // Save file metadata to database
     const fileAttachment = await FileAttachment.create({
       projectId: projectId,
@@ -49,6 +67,7 @@ exports.uploadFile = async (req, res, next) => {
       createdBy: req.user.id,
       description: description,
       status: "uploaded",
+      extractedText: extractedText,
     });
 
     // Clean up temporary file
