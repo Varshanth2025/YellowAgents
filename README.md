@@ -98,6 +98,18 @@ FileAttachment: uploaded files metadata
 - Dark mode
 - Better mobile responsiveness
 
+## Deployment
+
+Uploaded files are stored locally in `uploads/` folder (temporary) and on OpenAI's servers (permanent). File metadata and extracted text are in MongoDB.
+
+**Quick deploy:**
+
+- Backend: Render or Railway (free tier available)
+- Frontend: Vercel (free)
+- Database: MongoDB Atlas (free tier)
+
+See [DEPLOYMENT.md](DEPLOYMENT.md) for full deployment guide with step-by-step instructions for Render, Vercel, Heroku, and VPS options.
+
 ## License
 
 MIT
