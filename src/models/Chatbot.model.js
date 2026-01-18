@@ -1,5 +1,4 @@
 const mongoose = require("mongoose");
-
 const ChatbotSchema = new mongoose.Schema(
   {
     name: {
@@ -32,8 +31,5 @@ const ChatbotSchema = new mongoose.Schema(
     timestamps: true,
   },
 );
-
-// Index for efficient querying by user
 ChatbotSchema.index({ createdBy: 1 });
-
 module.exports = mongoose.model("Chatbot", ChatbotSchema);

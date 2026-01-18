@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import { getProjects, createProject, deleteProject } from "../services/api";
-
 const Dashboard = () => {
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -10,11 +9,9 @@ const Dashboard = () => {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [error, setError] = useState("");
-
   useEffect(() => {
     fetchProjects();
   }, []);
-
   const fetchProjects = async () => {
     try {
       const response = await getProjects();
@@ -25,11 +22,9 @@ const Dashboard = () => {
       setLoading(false);
     }
   };
-
   const handleCreateProject = async (e) => {
     e.preventDefault();
     setError("");
-
     try {
       await createProject({ name, description });
       setName("");
@@ -40,7 +35,6 @@ const Dashboard = () => {
       setError(err.response?.data?.error || "Failed to create project");
     }
   };
-
   const handleDelete = async (id) => {
     if (window.confirm("Are you sure you want to delete this project?")) {
       try {
@@ -51,9 +45,7 @@ const Dashboard = () => {
       }
     }
   };
-
   if (loading) return <div>Loading...</div>;
-
   return (
     <>
       <Navbar />
@@ -71,7 +63,6 @@ const Dashboard = () => {
             {showForm ? "Cancel" : "Create New Agent"}
           </button>
         </div>
-
         {showForm && (
           <div className="card">
             <h3>Create New AI Agent</h3>
@@ -99,7 +90,6 @@ const Dashboard = () => {
             </form>
           </div>
         )}
-
         {projects.length === 0 ? (
           <div className="card">
             <p>No AI agents yet. Create your first one!</p>
@@ -131,5 +121,4 @@ const Dashboard = () => {
     </>
   );
 };
-
 export default Dashboard;

@@ -6,3 +6,9 @@ dist/
 build/
 coverage/
 uploads/
+
+TESTING_FILE_FEATURE.md
+VIDEO_SCRIPT.md
+ARCHITECTURE.md
+AUTHENTICATION.md
+PROJECT_MODEL.md

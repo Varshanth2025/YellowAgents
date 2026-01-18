@@ -2,22 +2,18 @@ import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { register } from "../services/api";
 import { useAuth } from "../context/AuthContext";
-
 const Register = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-
   const navigate = useNavigate();
   const { loginUser } = useAuth();
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
     setLoading(true);
-
     try {
       const response = await register({ name, email, password });
       const { token, user } = response.data.data;
@@ -29,7 +25,6 @@ const Register = () => {
       setLoading(false);
     }
   };
-
   return (
     <div
       className="container"
@@ -78,5 +73,4 @@ const Register = () => {
     </div>
   );
 };
-
 export default Register;

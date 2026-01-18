@@ -2,21 +2,17 @@ import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { login } from "../services/api";
 import { useAuth } from "../context/AuthContext";
-
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-
   const navigate = useNavigate();
   const { loginUser } = useAuth();
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
     setLoading(true);
-
     try {
       const response = await login({ email, password });
       const { token, user } = response.data.data;
@@ -28,7 +24,6 @@ const Login = () => {
       setLoading(false);
     }
   };
-
   return (
     <div
       className="container"
@@ -67,5 +62,4 @@ const Login = () => {
     </div>
   );
 };
-
 export default Login;

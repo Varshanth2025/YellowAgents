@@ -1,9 +1,7 @@
 import { Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
-
 const Navbar = () => {
   const { user, logoutUser } = useAuth();
-
   return (
     <nav>
       <ul>
@@ -25,5 +23,4 @@ const Navbar = () => {
     </nav>
   );
 };
-
 export default Navbar;

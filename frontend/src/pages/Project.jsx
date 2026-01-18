@@ -11,7 +11,6 @@ import {
   getProjectFiles,
   deleteFile,
 } from "../services/api";
-
 const Project = () => {
   const { id } = useParams();
   const [project, setProject] = useState(null);
@@ -26,21 +25,16 @@ const Project = () => {
   const [files, setFiles] = useState([]);
   const [uploading, setUploading] = useState(false);
   const messagesEndRef = useRef(null);
-
   const sessionId = `session_${Date.now()}`;
-
   useEffect(() => {
     fetchData();
   }, [id]);
-
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
-
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
-
   const fetchData = async () => {
     try {
       const [projectRes, historyRes, filesRes] = await Promise.all([
@@ -48,11 +42,9 @@ const Project = () => {
         getChatHistory(id, sessionId),
         getProjectFiles(id),
       ]);
-
       setProject(projectRes.data.data);
       setMessages(historyRes.data.data);
       setFiles(filesRes.data.data || []);
-
       try {
         const promptRes = await getPrompt(id);
         setPrompt(promptRes.data.data.systemPrompt);
@@ -65,7 +57,6 @@ const Project = () => {
       setLoading(false);
     }
   };
-
   const handleSavePrompt = async (e) => {
     e.preventDefault();
     try {
@@ -76,23 +67,19 @@ const Project = () => {
       setError("Failed to save prompt");
     }
   };
-
   const handleSendMessage = async (e) => {
     e.preventDefault();
     if (!input.trim() || !prompt) {
       setError("Please set a system prompt first");
       return;
     }
-
     setSending(true);
     setError("");
-
     try {
       const response = await sendMessage(id, {
         message: input,
         sessionId: sessionId,
       });
-
       setMessages([
         ...messages,
         response.data.data.userMessage,
@@ -105,32 +92,24 @@ const Project = () => {
       setSending(false);
     }
   };
-
   const handleFileUpload = async (e) => {
     e.preventDefault();
     const fileInput = e.target.file.files[0];
     const description = e.target.description.value;
-
     if (!fileInput) {
       setError("Please select a file");
       return;
     }
-
     setUploading(true);
     setError("");
-
     try {
       const formData = new FormData();
       formData.append("file", fileInput);
       formData.append("description", description);
       formData.append("purpose", "assistants");
-
       await uploadFile(id, formData);
-
-      // Refresh files list
       const filesRes = await getProjectFiles(id);
       setFiles(filesRes.data.data || []);
-
       setShowFileUpload(false);
       e.target.reset();
     } catch (err) {
@@ -139,10 +118,8 @@ const Project = () => {
       setUploading(false);
     }
   };
-
   const handleDeleteFile = async (fileId) => {
     if (!confirm("Are you sure you want to delete this file?")) return;
-
     try {
       await deleteFile(id, fileId);
       setFiles(files.filter((f) => f._id !== fileId));
@@ -150,9 +127,7 @@ const Project = () => {
       setError("Failed to delete file");
     }
   };
-
   if (loading) return <div>Loading...</div>;
-
   return (
     <>
       <Navbar />
@@ -160,7 +135,6 @@ const Project = () => {
         <div style={{ marginBottom: "20px" }}>
           <Link to="/dashboard">← Back to Dashboard</Link>
         </div>
-
         <div className="card">
           <div
             style={{
@@ -183,7 +157,6 @@ const Project = () => {
             </div>
           </div>
         </div>
-
         {showPromptForm && (
           <div className="card">
             <h3>System Prompt</h3>
@@ -202,11 +175,9 @@ const Project = () => {
             </form>
           </div>
         )}
-
         {showFileUpload && (
           <div className="card">
             <h3>📎 File Management</h3>
-
             <form onSubmit={handleFileUpload} style={{ marginBottom: "20px" }}>
               <div className="form-group">
                 <label>Upload File (PDF, TXT, Code, Docs)</label>
@@ -229,7 +200,6 @@ const Project = () => {
                 {uploading ? "Uploading..." : "Upload File"}
               </button>
             </form>
-
             <h4>Uploaded Files ({files.length})</h4>
             {files.length === 0 ? (
               <p style={{ color: "#999" }}>No files uploaded yet</p>
@@ -276,7 +246,6 @@ const Project = () => {
             )}
           </div>
         )}
-
         <div className="card chat-container">
           {files.length > 0 && (
             <div
@@ -310,7 +279,6 @@ const Project = () => {
             )}
             <div ref={messagesEndRef} />
           </div>
-
           <form onSubmit={handleSendMessage} className="message-input">
             <input
               type="text"
@@ -332,7 +300,6 @@ const Project = () => {
               {sending ? "Sending..." : "Send"}
             </button>
           </form>
-
           {error && (
             <div className="error" style={{ padding: "10px" }}>
               {error}
@@ -343,5 +310,4 @@ const Project = () => {
     </>
   );
 };
-
 export default Project;

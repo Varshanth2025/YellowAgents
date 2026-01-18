@@ -10,7 +10,6 @@ import Register from "./pages/Register";
 import Dashboard from "./pages/Dashboard";
 import Project from "./pages/Project";
 import PrivateRoute from "./components/PrivateRoute";
-
 function App() {
   return (
     <AuthProvider>
@@ -40,5 +39,4 @@ function App() {
     </AuthProvider>
   );
 }
-
 export default App;

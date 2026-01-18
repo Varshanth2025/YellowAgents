@@ -1,5 +1,5 @@
 const express = require("express");
-const router = express.Router({ mergeParams: true }); // mergeParams to access :projectId
+const router = express.Router({ mergeParams: true }); 
 const multer = require("multer");
 const path = require("path");
 const { protect } = require("../middleware/auth");
@@ -9,11 +9,9 @@ const {
   getFile,
   deleteFile,
 } = require("../controllers/file.controller");
-
-// Configure multer for file uploads
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, "uploads/"); // Temporary storage
+    cb(null, "uploads/"); 
   },
   filename: function (req, file, cb) {
     const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
@@ -23,10 +21,7 @@ const storage = multer.diskStorage({
     );
   },
 });
-
-// File filter to allow specific types
 const fileFilter = (req, file, cb) => {
-  // Allowed file types for OpenAI
   const allowedTypes = [
     "text/plain",
     "application/pdf",
@@ -41,7 +36,6 @@ const fileFilter = (req, file, cb) => {
     "text/html",
     "text/css",
   ];
-
   if (
     allowedTypes.includes(file.mimetype) ||
     file.mimetype.startsWith("text/")
@@ -56,19 +50,15 @@ const fileFilter = (req, file, cb) => {
     );
   }
 };
-
 const upload = multer({
   storage: storage,
   fileFilter: fileFilter,
   limits: {
-    fileSize: 512 * 1024 * 1024, // 512MB max (OpenAI limit)
+    fileSize: 512 * 1024 * 1024, 
   },
 });
-
-// All routes are protected and use projectId from parent router
 router.post("/", protect, upload.single("file"), uploadFile);
 router.get("/", protect, getProjectFiles);
 router.get("/:fileId", protect, getFile);
 router.delete("/:fileId", protect, deleteFile);
-
 module.exports = router;
