@@ -11,6 +11,7 @@ const conversationRoutes = require("./routes/conversation.routes");
 const projectRoutes = require("./routes/project.routes");
 const chatRoutes = require("./routes/chat.routes");
 const app = express();
+app.set("trust proxy", 1);
 app.use(helmet());
 app.use(
   cors({
@@ -19,8 +20,8 @@ app.use(
   }),
 );
 const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000, 
-  max: 100, 
+  windowMs: 15 * 60 * 1000,
+  max: 100,
   message: "Too many requests from this IP, please try again later.",
 });
 app.use("/api/", limiter);
